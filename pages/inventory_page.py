@@ -1,5 +1,5 @@
 
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import expect
 
 
 class InventoryPage:
@@ -68,7 +68,9 @@ class InventoryPage:
     def open_cart(self):
         """Open the shopping cart."""
         self.cart_link.click()
-
+        expect(self.page).to_have_url(
+        "https://www.saucedemo.com/cart.html"
+        )
     def sort_by(self, sort_value: str):
         """Sort products using a native select dropdown."""
         self.sort_dropdown.select_option(sort_value)

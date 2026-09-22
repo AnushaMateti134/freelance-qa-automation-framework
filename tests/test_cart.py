@@ -41,6 +41,8 @@ def test_cart_contains_multiple_products(
 
     inventory_page.open_cart()
 
+    cart_page.wait_for_item_count(2)
+
     assert cart_page.get_item_count() == 2
 
 def test_cart_product_names(
