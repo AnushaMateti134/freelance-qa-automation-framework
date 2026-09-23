@@ -74,3 +74,22 @@ class InventoryPage:
     def sort_by(self, sort_value: str):
         """Sort products using a native select dropdown."""
         self.sort_dropdown.select_option(sort_value)
+    def continue_to_overview(self):
+
+        expect(
+        self.continue_button
+    ).to_be_visible()
+
+        expect(
+        self.continue_button
+    ).to_be_enabled()
+
+        self.continue_button.click()
+
+        expect(
+        self.page
+    ).to_have_url(
+        "https://www.saucedemo.com/checkout-step-two.html"
+    )
+    def get_error_message(self):
+        return self.page.get_by_role("alert")

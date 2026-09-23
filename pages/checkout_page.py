@@ -52,3 +52,16 @@ class CheckoutPage:
         ).to_have_url(
             "https://www.saucedemo.com/checkout-step-two.html"
         )
+    def click_continue(self):
+        expect(
+        self.continue_button
+    ).to_be_visible()
+
+        expect(
+        self.continue_button
+    ).to_be_enabled()
+
+        self.continue_button.click()
+    def get_error_message(self):
+        return self.page.get_by_role("alert")
+     

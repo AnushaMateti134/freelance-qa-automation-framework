@@ -1,56 +1,51 @@
+import pytest
+from playwright.sync_api import expect
+
 from pages.cart_page import CartPage
 from pages.checkout_page import CheckoutPage
-from pages.checkout_overview_page import CheckoutOverviewPage
+from test_data.checkout_data import INVALID_CHECKOUT_DATA
 
-
-def test_complete_checkout_workflow(
+from playwright.sync_api import expect
+@pytest.mark.parametrize(
+    "first_name,last_name,postal_code,expected_error",
+    INVALID_CHECKOUT_DATA
+)
+def test_checkout_required_fields(
     logged_in_inventory,
     page,
+    first_name,
+    last_name,
+    postal_code,
+    expected_error
 ):
-
-    # Step 1: Add product
     inventory_page = logged_in_inventory
 
-    inventory_page.add_product_to_cart(
-        "Sauce Labs Backpack"
-    )
+    # Add product
+    inventory_page.add_product_to_cart("Sauce Labs Backpack")
 
-    # Step 2: Open cart
+    # Open cart
     inventory_page.open_cart()
 
-    # Step 3: Create CartPage
+    # Go to checkout
     cart_page = CartPage(page)
-
-    # Step 4: Wait for cart item
-    cart_page.wait_for_item_count(1)
-
-    # Step 5: Go to checkout
     cart_page.proceed_to_checkout()
 
-    # Step 6: Create CheckoutPage
+    # Enter checkout information
     checkout_page = CheckoutPage(page)
 
-    # Step 7: Enter customer information
-    checkout_page.enter_first_name("Anusha")
-    checkout_page.enter_last_name("Mateti")
-    checkout_page.enter_postal_code("12345")
+    checkout_page.enter_first_name(first_name)
+    checkout_page.enter_last_name(last_name)
+    checkout_page.enter_postal_code(postal_code)
 
-    # Step 8: Continue to overview
-    checkout_page.continue_to_overview()
+    # Click Continue
+    checkout_page.click_continue()
 
-    # Step 9: Create CheckoutOverviewPage
-    overview_page = CheckoutOverviewPage(page)
+    # Verify validation message
+    expect(
+        checkout_page.get_error_message()
+    ).to_be_visible()
 
-    # Step 10: Verify subtotal
-    expected_subtotal = (
-        overview_page.calculate_subtotal_from_products()
-    )
-
-    actual_subtotal = (
-        overview_page.get_item_total()
-    )
-
-    assert actual_subtotal == expected_subtotal
-
-    # Step 11: Finish checkout
-    overview_page.finish_checkout()
+    # Verify exact error message
+    expect(
+        checkout_page.get_error_message()
+    ).to_have_text(expected_error)
