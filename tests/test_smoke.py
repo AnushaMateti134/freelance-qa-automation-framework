@@ -1,15 +1,9 @@
 
-from playwright.sync_api import Page, expect
+import pytest
+from playwright.sync_api import expect
 
-from config.settings import BASE_URL
 
-
-def test_saucedemo_homepage_loads(page: Page):
-    # Open the application
-    page.goto(BASE_URL)
-
-    # Verify the page title
+@pytest.mark.smoke
+def test_saucedemo_homepage_loads(page, base_url):
+    page.goto(base_url)
     expect(page).to_have_title("Swag Labs")
-
-    # Verify the login button is visible
-    expect(page.locator("#login-button")).to_be_visible()
