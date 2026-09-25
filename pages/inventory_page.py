@@ -1,6 +1,8 @@
 
 from playwright.sync_api import expect
+from utils.logger import get_logger
 
+logger = get_logger(__name__)
 
 class InventoryPage:
     """Page Object for the SauceDemo inventory page."""
@@ -93,3 +95,13 @@ class InventoryPage:
     )
     def get_error_message(self):
         return self.page.get_by_role("alert")
+
+    def add_product_to_cart(self, product_name):
+        logger.info(f"Adding product to cart: {product_name}")
+
+        product = self.get_product(product_name)
+        product.get_by_role("button", name="Add to cart").click()
+
+    def sort_by(self, value):
+        logger.info(f"Sorting products by: {value}")
+        self.sort_dropdown.select_option(value)

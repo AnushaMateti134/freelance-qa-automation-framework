@@ -1,6 +1,9 @@
 
 from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, expect
+from utils.logger import get_logger
 
+logger = get_logger(__name__)
 
 class LoginPage:
     """Page Object for the SauceDemo login page."""
@@ -41,3 +44,14 @@ class LoginPage:
     def get_error_message(self) -> str:
         """Return the login error message text."""
         return self.error_message.inner_text()
+
+    def open(self, url):
+        logger.info(f"Opening login page: {url}")
+        self.page.goto(url)
+        
+    def login(self, username, password):
+        logger.info(f"Logging in with username: {username}")
+
+        self.username_input.fill(username)
+        self.password_input.fill(password)
+        self.login_button.click()

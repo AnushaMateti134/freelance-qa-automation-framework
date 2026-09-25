@@ -1,5 +1,7 @@
 from playwright.sync_api import Page, expect
+from utils.logger import get_logger
 
+logger = get_logger(__name__)
 
 class CartPage:
 
@@ -71,3 +73,11 @@ class CartPage:
         ).to_have_url(
             "https://www.saucedemo.com/checkout-step-one.html"
         )
+
+    def proceed_to_checkout(self):
+        logger.info("Proceeding to checkout")
+
+        expect(self.checkout_button).to_be_visible()
+        expect(self.checkout_button).to_be_enabled()
+
+        self.checkout_button.click()
